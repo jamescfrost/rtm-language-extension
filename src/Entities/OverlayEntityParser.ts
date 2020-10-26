@@ -17,7 +17,7 @@ export default class OverlayEntityParser extends LocatableEntityParser {
   parse(source: Source, code: string, offset: number): OverlayEntity[] {
     const entities = this.internalParse(
       OverlayEntity,
-      /^Nothing/,
+      /^\$ENTRY\s+([A-Z0-9\.]+)[\s\S]*?(?=^\$(?:ENTRY|END))/gm,
       source,
       code,
       1,

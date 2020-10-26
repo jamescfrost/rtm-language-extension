@@ -1,20 +1,25 @@
 import IncludableEntity from "./IncludableEntity";
 import Source from "../Source";
 import LocatableEntityParser from "./LocatableEntityParser";
+import Selection from "../Selection";
 
 export default class IncludableEntityParser extends LocatableEntityParser {
 
-  parse(source: Source, code: string, offset: number): IncludableEntity[] {
-    const entities = this.internalParse(
-      IncludableEntity,
-      /^\$INCLUDE\s+(\*|[A-Z]+)\s*\(([A-Z0-9\.]+)\).*$/gm,
-      source,
-      code,
-      2,
-      offset,
-      (entity, match) => {
-      }
-    );
-    return entities;
-  }
+    parse(source: Source, code: string, offset: number): IncludableEntity[] {
+        const entities = this.internalParse(
+            IncludableEntity,
+            /^\$NAME\s+([A-Z0-9\.]+\b)[\S\s]*?\n([\S\s]*?)(?=^\$NAME\s+)/gm,
+            source,
+            code,
+            1,
+            offset,
+            (entity, match) => {
+                const fullMatch = match[0];
+                const includeSelectionMatch = match[2];
+                const includeSelectionStart = fullMatch.indexOf(includeSelectionMatch) + entity.selection.start;
+                entity.includeSelection = new Selection(includeSelectionStart, includeSelectionMatch.length);
+            }
+        );
+        return entities;
+    }
 }

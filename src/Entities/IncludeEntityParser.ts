@@ -7,13 +7,18 @@ export class IncludeEntityParser extends LocatableEntityParser {
   parse(source: Source, code: string, offset: number): IncludeEntity[] {
     const entities = this.internalParse(
       IncludeEntity,
-      /^\$INCLUDE\s+(\*|[A-Z]+)\s*\(([A-Z0-9\.]+)\).*$/gm,
+      /^\$INCLUDE\s+(\*|[A-Z0-9_-]+)\s*\(([A-Z0-9\.]+)\).*/gm,
       source,
       code,
       2,
       offset,
       (entity, match) => {
-        entity.sourceName = match[1]
+        let includableSourceName = match[1];
+        if (includableSourceName != "*") {
+          includableSourceName = includableSourceName.toUpperCase()
+          includableSourceName = includableSourceName.endsWith(".RTM") ? includableSourceName : includableSourceName + ".RTM";  
+        }
+        entity.includableSourceName = includableSourceName;
       }
     );
     return entities;

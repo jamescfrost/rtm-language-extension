@@ -5,7 +5,7 @@ import Selection from "../Selection";
 
 export default class IncludeEntity extends LocatableEntity {
   
-  sourceName: string;
+  includableSourceName: string;
   includableSelection: Selection;
 
   getDetail(): string {
