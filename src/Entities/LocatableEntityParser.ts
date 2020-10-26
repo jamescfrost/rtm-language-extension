@@ -52,7 +52,6 @@ export default abstract class LocatableEntityParser extends EntityParser {
                 includableSelection.length +
                 include.selection.length
               );
-              break;
             } else if (entity.selection.after(includableSelection)) {
               matchOffset =
                 matchOffset -

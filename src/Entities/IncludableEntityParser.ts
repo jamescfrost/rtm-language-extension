@@ -8,7 +8,7 @@ export default class IncludableEntityParser extends LocatableEntityParser {
     parse(source: Source, code: string, offset: number): IncludableEntity[] {
         const entities = this.internalParse(
             IncludableEntity,
-            /^\$NAME\s+([A-Z0-9\.]+\b)[\S\s]*?\n([\S\s]*?)(?=^\$NAME\s+)/gm,
+            /^\$NAME\s+([A-Z0-9\.]+\b)[\S\s]*?\n([\S\s]*?)(?=(?:\r\n|\n|\r)\$NAME\s+)/gm,
             source,
             code,
             1,
