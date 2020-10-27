@@ -1,4 +1,3 @@
-import * as vscode from "vscode";
 import Selection from "../Selection";
 import Entity from "./Entity";
 

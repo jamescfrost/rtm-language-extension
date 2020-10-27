@@ -24,13 +24,12 @@ export default abstract class LocatableEntityParser extends EntityParser {
       if (match !== null) {
         var entity = new entityClass();
         entity.sourceName = source.name;
-        const fullMatch = match[0];
-        let matchOffset = offset + match.index;
-        entity.selection = new Selection(matchOffset, fullMatch.length);
+        entity.selection = new Selection(offset + match.index, match[0].length);
         if (source.includes) {
           for (const include of source.includes) {
             const includable = this.rtmWorkspace.findIncludable(include);
-            if (!includable) break;
+            if (!includable) 
+              break;
             const includableSelection = new Selection(
               include.selection.start,
               includable.includeSelection.length
@@ -40,29 +39,21 @@ export default abstract class LocatableEntityParser extends EntityParser {
             );
             if (intersection) {
               entity.sourceName = includable.sourceName;
-              entity.selection = new Selection(
-                includableSelection.start + intersection.start,
-                intersection.length
-              );
-              break;
+              entity.selection.start = includableSelection.start + intersection.start;
+              entity.selection.length = intersection.length;
+              continue;
             } else if (entity.selection.intersection(includableSelection)) {
-              entity.selection = new Selection(
-                matchOffset,
-                entity.selection.length -
-                includableSelection.length +
-                include.selection.length
-              );
+              entity.selection.length -= (includableSelection.length - include.selection.length);
             } else if (entity.selection.after(includableSelection)) {
-              matchOffset =
-                matchOffset -
-                includableSelection.length +
-                include.selection.length;
+              entity.selection.start -= (includableSelection.length - include.selection.length);
+            } else {
+              break;
             }
           }
         }
         entity.name = match[nameMatchIndex];
         const nameSelectionStart =
-          fullMatch.indexOf(entity.name) + entity.selection.start;
+          match[0].indexOf(entity.name) + entity.selection.start;
         entity.nameSelection = new Selection(nameSelectionStart, entity.name.length);
         if (applyExtendedFields)
           applyExtendedFields(entity, match);
