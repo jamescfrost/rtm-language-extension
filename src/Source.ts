@@ -38,7 +38,7 @@ export default class Source {
     code = code.replace(new RegExp(/^\*.*/gm), (match) =>
       " ".repeat(match.length)
     );
-    code = code.replace(new RegExp(/<<.*?(?:>>|$)/gm), (match) =>
+    code = code.replace(new RegExp(/<<.*?(?:>>|(?=$))/gm), (match) =>
       " ".repeat(match.length)
     );
     return code;
