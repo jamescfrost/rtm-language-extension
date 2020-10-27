@@ -39,6 +39,7 @@ export default class OverlayEntityParser {
       (overlay, match) => {
         const overlayCode = match[0];
         overlay.variables = [];
+        overlay.procedures = [];
         this.parseVariables(/^\$USERDATA\b[\s\S]*?(^[\s\S]*?)(?=^\$[A-Z]+)/gm, overlay, source, overlayCode);
         this.parseVariables(/^\$SCREENDATA\b[\s\S]*?(^[\s\S]*?)(?=^\$[A-Z]+)/gm, overlay, source, overlayCode);
         this.parseVariables(/^\$DATA\b[\s\S]*?(^[\s\S]*?)(?=^\$[A-Z]+)/gm, overlay, source, overlayCode);
