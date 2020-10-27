@@ -1,22 +1,29 @@
+import * as vscode from "vscode";
 import LocatableEntityParser from "./LocatableEntityParser";
 import Source from "../Source";
 import IncludeEntity from "./IncludeEntity";
+import RtmWorkspace from "../RtmWorkspace";
 
-export class IncludeEntityParser extends LocatableEntityParser {
+export class IncludeEntityParser {
+
+  constructor(private rtmWorkspace: RtmWorkspace) { }
+
+  locatableEntityParser = new LocatableEntityParser(this.rtmWorkspace);
 
   parse(source: Source, code: string, offset: number): IncludeEntity[] {
-    const entities = this.internalParse(
+    const entities = this.locatableEntityParser.parse(
       IncludeEntity,
       /^\$INCLUDE\s+(\*|[A-Z0-9_-]+)\s*\(([A-Z0-9\.]+)\).*/gm,
       source,
       code,
-      2,
       offset,
+      2,
+      vscode.SymbolKind.Package,
       (entity, match) => {
         let includableSourceName = match[1];
         if (includableSourceName != "*") {
           includableSourceName = includableSourceName.toUpperCase()
-          includableSourceName = includableSourceName.endsWith(".RTM") ? includableSourceName : includableSourceName + ".RTM";  
+          includableSourceName = includableSourceName.endsWith(".RTM") ? includableSourceName : includableSourceName + ".RTM";
         }
         entity.includableSourceName = includableSourceName;
       }

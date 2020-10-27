@@ -1,17 +1,29 @@
+import * as vscode from "vscode";
 import LocatableEntityParser from "./LocatableEntityParser";
 import ProcedureEntity from "./ProcedureEntity";
 import Source from "../Source";
+import RtmWorkspace from "../RtmWorkspace";
+import FunctionalEntityParser from "./FunctionalEntityParser";
 
-export default class ProcedureEntityParser extends LocatableEntityParser {
+export default class ProcedureEntityParser {
+  
+  constructor(private rtmWorkspace: RtmWorkspace) {}
+  
+  functionalEntityParser = new FunctionalEntityParser(this.rtmWorkspace);
 
-  parse(source: Source, code: string, offset: number): ProcedureEntity[] {
-    const entities = this.internalParse(
+  parse(
+    source: Source,
+    code: string,
+    offset: number,
+  ): ProcedureEntity[] {
+    const entities = this.functionalEntityParser.parse(
       ProcedureEntity,
-      /^Nothing/,
+      /^([A-Z0-9\.]+)\s+PROC\(((?:\b[A-Z0-9\.]+\b\s*,?\s*)*)\)[\s\S]*?^ENDPROC\b/gm,
       source,
       code,
-      2,
-      offset
+      offset,
+      1,
+      vscode.SymbolKind.Method
     );
     return entities;
   }

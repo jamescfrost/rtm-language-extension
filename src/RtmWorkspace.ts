@@ -38,7 +38,7 @@ export default class RtmWorkspace {
 
   async loadSource(doc: vscode.TextDocument): Promise<Source> {
     const source = new Source(this);
-    source.Load(doc);
+    await source.Load(doc);
     let existingSourceIndex = this.sources.findIndex(
       (d) => d.name == source.name
     );

@@ -23,9 +23,7 @@ export default class Source {
     this.uri = doc.uri;
     let code = doc.getText();
     code = this.replaceComments(code);
-    const includableEntityParser = new IncludableEntityParser(
-      this.rtmWorkspace
-    );
+    const includableEntityParser = new IncludableEntityParser(this.rtmWorkspace);
     this.includables = includableEntityParser.parse(this, code, 0);
     const includeEntityParser = new IncludeEntityParser(this.rtmWorkspace);
     this.includes = includeEntityParser.parse(this, code, 0);

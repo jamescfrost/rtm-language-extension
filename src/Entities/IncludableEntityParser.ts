@@ -1,18 +1,26 @@
+import * as vscode from "vscode";
 import IncludableEntity from "./IncludableEntity";
 import Source from "../Source";
 import LocatableEntityParser from "./LocatableEntityParser";
 import Selection from "../Selection";
+import RtmWorkspace from "../RtmWorkspace";
+import IncludeEntity from "./IncludeEntity";
 
-export default class IncludableEntityParser extends LocatableEntityParser {
+export default class IncludableEntityParser {
+
+    constructor(private rtmWorkspace: RtmWorkspace) { }
+
+    locatableEntityParser = new LocatableEntityParser(this.rtmWorkspace);
 
     parse(source: Source, code: string, offset: number): IncludableEntity[] {
-        const entities = this.internalParse(
+        const entities = this.locatableEntityParser.parse(
             IncludableEntity,
             /^\$NAME\s+([A-Z0-9\.]+\b)[\S\s]*?\n([\S\s]*?)(?=(?:\r\n|\n|\r)\$NAME\s+)/gm,
             source,
             code,
-            1,
             offset,
+            1,
+            vscode.SymbolKind.Package,
             (entity, match) => {
                 const fullMatch = match[0];
                 const includeSelectionMatch = match[2];

@@ -5,8 +5,6 @@ import VariableEntity from "./VariableEntity";
 
 export default class OverlayEntity extends FunctionalEntity {
 
-  kind: vscode.SymbolKind = vscode.SymbolKind.Function;
-
   files: [];
   variables: VariableEntity[];
   procedures: ProcedureEntity[];

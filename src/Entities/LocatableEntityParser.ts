@@ -1,34 +1,40 @@
+import * as vscode from "vscode";
 import EntityParser from "./EntityParser";
 import LocatableEntity from "./LocatableEntity";
 import Source from "../Source";
 import Selection from "../Selection";
 import RtmWorkspace from "../RtmWorkspace";
 
-export default abstract class LocatableEntityParser extends EntityParser {
+export default class LocatableEntityParser {
   constructor(protected rtmWorkspace: RtmWorkspace) {
-    super();
   }
 
-  internalParse<T extends LocatableEntity>(
+  private entityParser = new EntityParser();
+
+  parse<T extends LocatableEntity>(
     entityClass: { new(): T },
     regexp: RegExp,
     source: Source,
     code: string,
-    nameMatchIndex: number,
     offset: number,
+    nameMatchIndex: number,
+    kind: vscode.SymbolKind,
     applyExtendedFields?: (entity: T, match: RegExpExecArray) => void
   ): T[] {
-    const entities: T[] = [];
-    let match: RegExpExecArray | null;
-    while ((match = regexp.exec(code)) != null) {
-      if (match !== null) {
-        var entity = new entityClass();
+    const entities = this.entityParser.parse(
+      entityClass,
+      regexp,
+      source,
+      code,
+      nameMatchIndex,
+      kind,
+      (entity, match) => {
         entity.sourceName = source.name;
         entity.selection = new Selection(offset + match.index, match[0].length);
         if (source.includes) {
           for (const include of source.includes) {
             const includable = this.rtmWorkspace.findIncludable(include);
-            if (!includable) 
+            if (!includable)
               break;
             const includableSelection = new Selection(
               include.selection.start,
@@ -51,15 +57,13 @@ export default abstract class LocatableEntityParser extends EntityParser {
             }
           }
         }
-        entity.name = match[nameMatchIndex];
         const nameSelectionStart =
           match[0].indexOf(entity.name) + entity.selection.start;
         entity.nameSelection = new Selection(nameSelectionStart, entity.name.length);
         if (applyExtendedFields)
           applyExtendedFields(entity, match);
-        entities.push(entity);
       }
-    }
+    );
     return entities;
   }
 }

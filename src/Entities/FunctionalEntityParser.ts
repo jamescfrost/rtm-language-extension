@@ -3,31 +3,36 @@ import FunctionalEntity from "./FunctionalEntity";
 import LocatableEntity from "./LocatableEntity";
 import LocatableEntityParser from "./LocatableEntityParser";
 import Source from "../Source";
+import RtmWorkspace from "../RtmWorkspace";
 
-export default abstract class FunctionalEntityParser extends LocatableEntityParser {
-  internalParse<T extends LocatableEntity>(
-    entityClass: { new (): T },
+export default class FunctionalEntityParser {
+
+  constructor(private rtmWorkspace: RtmWorkspace) { }
+
+  private locatableEntityParser = new LocatableEntityParser(this.rtmWorkspace);
+
+  parse<T extends FunctionalEntity>(
+    entityClass: { new(): T },
     regexp: RegExp,
     source: Source,
     code: string,
-    nameMatchIndex: number,
     offset: number,
-    applyExtendedFields: (entity: T, match: RegExpExecArray) => void
+    nameMatchIndex: number,
+    kind: vscode.SymbolKind,
+    applyExtendedFields?: (entity: T, match: RegExpExecArray) => void
   ): T[] {
-    const entities = super.internalParse(
+    const entities = this.locatableEntityParser.parse(
       entityClass,
       regexp,
       source,
       code,
-      nameMatchIndex,
       offset,
+      nameMatchIndex,
+      kind,
       (entity, match) => {
-        const functionalEntity = <FunctionalEntity><unknown>entity;
-        functionalEntity.parameters = match[2]
-        .replace("(", "")
-        .replace(")", "")
-        .split(",");
-        applyExtendedFields(entity, match);
+        entity.parameters = match[2].replace(/\s/g, "").split(",");
+        if (applyExtendedFields)
+          applyExtendedFields(entity, match);
       }
     );
     return entities;
