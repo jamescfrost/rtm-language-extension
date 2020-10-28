@@ -1,6 +1,6 @@
-import LocatableEntity from "./LocatableEntity";
+import Entity from "./Entity";
 
-export default class VariableEntity extends LocatableEntity {
+export default class VariableEntity extends Entity {
 
   editMask: string;
 

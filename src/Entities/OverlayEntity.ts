@@ -1,4 +1,3 @@
-import * as vscode from "vscode";
 import FunctionalEntity from "./FunctionalEntity";
 import ProcedureEntity from "./ProcedureEntity";
 import VariableEntity from "./VariableEntity";

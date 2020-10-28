@@ -1,5 +1,4 @@
 import * as vscode from "vscode";
-import LocatableEntityParser from "./LocatableEntityParser";
 import ProcedureEntity from "./ProcedureEntity";
 import Source from "../Source";
 import RtmWorkspace from "../RtmWorkspace";

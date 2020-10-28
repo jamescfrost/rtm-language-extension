@@ -1,14 +1,14 @@
 import * as vscode from "vscode";
-import LocatableEntityParser from "./LocatableEntityParser";
 import Source from "../Source";
 import VariableEntity from "./VariableEntity";
 import RtmWorkspace from "../RtmWorkspace";
+import EntityParser from "./EntityParser";
 
 export default class VariableEntityParser {
 
   constructor(private rtmWorkspace: RtmWorkspace) {}
 
-  locatableEntityParser = new LocatableEntityParser(this.rtmWorkspace);
+  locatableEntityParser = new EntityParser(this.rtmWorkspace);
 
   parse(
     source: Source,

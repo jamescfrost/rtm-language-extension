@@ -5,8 +5,6 @@ import ProcedureEntityParser from "./ProcedureEntityParser";
 import RtmWorkspace from "../RtmWorkspace";
 import VariableEntityParser from "./VariableEntityParser";
 import FunctionalEntityParser from "./FunctionalEntityParser";
-import Selection from "../Selection";
-import Entity from "./Entity";
 
 export default class OverlayEntityParser {
 

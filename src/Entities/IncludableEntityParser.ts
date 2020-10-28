@@ -1,16 +1,15 @@
 import * as vscode from "vscode";
 import IncludableEntity from "./IncludableEntity";
 import Source from "../Source";
-import LocatableEntityParser from "./LocatableEntityParser";
 import Selection from "../Selection";
 import RtmWorkspace from "../RtmWorkspace";
-import IncludeEntity from "./IncludeEntity";
+import EntityParser from "./EntityParser";
 
 export default class IncludableEntityParser {
 
     constructor(private rtmWorkspace: RtmWorkspace) { }
 
-    locatableEntityParser = new LocatableEntityParser(this.rtmWorkspace);
+    locatableEntityParser = new EntityParser(this.rtmWorkspace);
 
     parse(source: Source, code: string, offset: number): IncludableEntity[] {
         const entities = this.locatableEntityParser.parse(

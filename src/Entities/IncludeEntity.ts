@@ -1,6 +1,6 @@
-import LocatableEntity from "./LocatableEntity";
+import Entity from "./Entity";
 
-export default class IncludeEntity extends LocatableEntity {
+export default class IncludeEntity extends Entity {
   
   includableSourceName: string;
 

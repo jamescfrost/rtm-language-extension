@@ -1,15 +1,14 @@
 import * as vscode from "vscode";
 import FunctionalEntity from "./FunctionalEntity";
-import LocatableEntity from "./LocatableEntity";
-import LocatableEntityParser from "./LocatableEntityParser";
 import Source from "../Source";
 import RtmWorkspace from "../RtmWorkspace";
+import EntityParser from "./EntityParser";
 
 export default class FunctionalEntityParser {
 
   constructor(private rtmWorkspace: RtmWorkspace) { }
 
-  private locatableEntityParser = new LocatableEntityParser(this.rtmWorkspace);
+  private locatableEntityParser = new EntityParser(this.rtmWorkspace);
 
   parse<T extends FunctionalEntity>(
     entityClass: { new(): T },

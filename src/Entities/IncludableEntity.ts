@@ -1,7 +1,7 @@
-import LocatableEntity from "./LocatableEntity";
 import Selection from "../Selection";
+import Entity from "./Entity";
 
-export default class IncludableEntity extends LocatableEntity {
+export default class IncludableEntity extends Entity {
   
   includeSelection: Selection;
   
