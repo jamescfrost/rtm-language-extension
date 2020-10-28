@@ -19,7 +19,7 @@ export default class EntityParser {
       if (match !== null) {
         var entity = new entityClass();
         entity.name = match[nameMatchIndex];        
-        entity.uri = source.uri;
+//        entity.uri = source.uri;
         entity.kind = kind;
         if (applyExtendedFields)
           applyExtendedFields(entity, match);

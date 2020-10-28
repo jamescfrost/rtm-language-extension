@@ -12,7 +12,7 @@ export default class Selection {
     if (this.start >= selection.start || this.start + this.length <= selection.start + selection.length) {
         return null;
     }
-    const intersectionSelection = new Selection(this.start-selection.start, selection.length)
+    const intersectionSelection = new Selection(selection.start-this.start, selection.length)
     return intersectionSelection;
   }
 

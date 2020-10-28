@@ -68,17 +68,4 @@ export default class RtmWorkspace {
     return undefined;
   }
 
-  findIncludable(include: IncludeEntity): IncludableEntity | undefined {
-    const sourceName =
-      include.includableSourceName == "*"
-        ? include.sourceName
-        : include.includableSourceName;
-    const source = this.sources.find(
-      (s) => s.name == sourceName
-    );
-    const includableEntity = source?.includables.find(
-      (i) => i.name == include.name
-    );
-    return includableEntity;
-  }
 }

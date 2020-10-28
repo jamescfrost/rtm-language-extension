@@ -53,9 +53,11 @@ export default class OverlayEntityParser {
   private parseVariables(regexp: RegExp, overlay: OverlayEntity, source: Source, code: string) {
     let match = regexp.exec(code);
     if (match != null) {
+      const matchedCode = match[0];
       const searchableCode = match[1];
-      const searchableOffset = overlay.selection.start + match.index;
-      const entities = this.variableEntityParser.parse(source, searchableCode, searchableOffset);
+      const searchableOffset = matchedCode.indexOf(searchableCode);
+      const totalOffset = overlay.selection.start + match.index + searchableOffset;
+      const entities = this.variableEntityParser.parse(source, searchableCode, totalOffset);
       overlay.variables.push(...entities)
     }
   }

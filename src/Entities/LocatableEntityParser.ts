@@ -6,13 +6,12 @@ import Selection from "../Selection";
 import RtmWorkspace from "../RtmWorkspace";
 
 export default class LocatableEntityParser {
-  constructor(protected rtmWorkspace: RtmWorkspace) {
-  }
+  constructor(protected rtmWorkspace: RtmWorkspace) {}
 
   private entityParser = new EntityParser();
 
   parse<T extends LocatableEntity>(
-    entityClass: { new(): T },
+    entityClass: { new (): T },
     regexp: RegExp,
     source: Source,
     code: string,
@@ -33,9 +32,16 @@ export default class LocatableEntityParser {
         entity.selection = new Selection(offset + match.index, match[0].length);
         if (source.includes) {
           for (const include of source.includes) {
-            const includable = this.rtmWorkspace.findIncludable(include);
-            if (!includable)
-              break;
+            const includebleSource =
+              include.includableSourceName == "*"
+                ? source
+                : this.rtmWorkspace.sources.find(
+                    (s) => s.name == include.includableSourceName
+                  );
+            const includable = includebleSource?.includables.find(
+              (i) => i.name == include.name
+            );
+            if (!includable) break;
             const includableSelection = new Selection(
               include.selection.start,
               includable.includeSelection.length
@@ -45,13 +51,16 @@ export default class LocatableEntityParser {
             );
             if (intersection) {
               entity.sourceName = includable.sourceName;
-              entity.selection.start = includableSelection.start + intersection.start;
+              entity.selection.start =
+                includable.includeSelection.start + intersection.start;
               entity.selection.length = intersection.length;
               continue;
             } else if (entity.selection.intersection(includableSelection)) {
-              entity.selection.length -= (includableSelection.length - include.selection.length);
+              entity.selection.length -=
+                includableSelection.length - include.selection.length;
             } else if (entity.selection.after(includableSelection)) {
-              entity.selection.start -= (includableSelection.length - include.selection.length);
+              entity.selection.start -=
+                includableSelection.length - include.selection.length;
             } else {
               break;
             }
@@ -59,9 +68,11 @@ export default class LocatableEntityParser {
         }
         const nameSelectionStart =
           match[0].indexOf(entity.name) + entity.selection.start;
-        entity.nameSelection = new Selection(nameSelectionStart, entity.name.length);
-        if (applyExtendedFields)
-          applyExtendedFields(entity, match);
+        entity.nameSelection = new Selection(
+          nameSelectionStart,
+          entity.name.length
+        );
+        if (applyExtendedFields) applyExtendedFields(entity, match);
       }
     );
     return entities;
