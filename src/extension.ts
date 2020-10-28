@@ -5,6 +5,8 @@ import { DocumentSymbolProvider } from './DocumentSymbolProvider';
 import { WorkspaceSymbolProvider } from './WorkspaceSymbolProvider';
 import { DefinitionProvider } from './DefinitionProvider';
 import RtmWorkspace from './RtmWorkspace';
+import Selection from "./Selection";
+import Entity from './Entities/Entity';
 
 const selector = { language: 'rtm', scheme: 'file' };
 
@@ -20,19 +22,28 @@ export function activate(context: vscode.ExtensionContext) {
 	// 	vscode.window.showInformationMessage('Hello World!');
 	// }));
 
-	// context.subscriptions.push(vscode.languages.registerHoverProvider(selector, {
-	// 	async provideHover(doc, pos) {
-	// 		const symbols = await workspaceSymbolProvider.provideWorkspaceDocumentSymbols();
-	// 		const wordRange = doc.getWordRangeAtPosition(pos);
-	// 		if (wordRange) {
-	// 			const symbol = symbols.find(x => x.name === doc.getText(wordRange));
-	// 			if (symbol) {
-	// 				return new vscode.Hover(symbol.detail);
-	// 			}
-	// 		}
-	// 		return null;
-	// 	}
-	// }));
+	context.subscriptions.push(vscode.languages.registerHoverProvider(selector, {
+		async provideHover(doc, pos) {
+			const wordRange = doc.getWordRangeAtPosition(pos);
+			if (wordRange) {
+				if (rtmWorkspace.loading) 
+					return new vscode.Hover("Loading ...");
+				const name = RtmWorkspace.getNameFromFilePath(doc.fileName);
+				const source = rtmWorkspace.sources.find(s => s.name == name);
+				const word = doc.getText(wordRange);
+				const wordSelection = new Selection(doc.offsetAt(wordRange.start), word.length);
+				const overlay = source?.overlays.find(o => o.selection.intersection(wordSelection));
+				if (overlay) {
+					let entity: Entity | undefined = overlay.variables.find(v => v.name == word);
+					if (!entity)
+						entity = overlay.procedures.find(v => v.name == word);
+					if (entity)
+						return new vscode.Hover(entity.getDetail());
+				}
+			}
+			return null;
+		}
+	}));
 
 	//context.subscriptions.push(vscode.languages.registerDocumentSymbolProvider(selector, docSymbolProvider));
 

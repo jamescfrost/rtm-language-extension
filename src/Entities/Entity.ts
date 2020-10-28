@@ -8,6 +8,7 @@ export default abstract class Entity {
   sourceName: string;
   selection: Selection;
   nameSelection: Selection;
-
+ 
+  abstract getDetail(): string;
 }
 

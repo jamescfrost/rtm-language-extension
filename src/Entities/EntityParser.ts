@@ -69,6 +69,7 @@ export default class EntityParser {
           entity.name.length
         );
         if (applyExtendedFields) applyExtendedFields(entity, match);
+        entities.push(entity);
       }
     }
     return entities;

@@ -9,7 +9,7 @@ export default class OverlayEntity extends FunctionalEntity {
   procedures: ProcedureEntity[];
 
   getDetail(): string {
-    throw new Error("Method not implemented.");
+    return `$ENTRY ${this.name}(${this.parameters.join(", ")})`;
   }
 
 }

@@ -6,7 +6,7 @@ export default class IncludableEntity extends Entity {
   includeSelection: Selection;
   
   getDetail(): string {
-    throw new Error("Method not implemented.");
+    return `$NAME ${this.name}`;
   }
   
 }

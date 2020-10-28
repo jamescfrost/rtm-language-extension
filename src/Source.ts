@@ -17,9 +17,7 @@ export default class Source {
   constructor(private rtmWorkspace: RtmWorkspace) { }
 
   async Load(doc: vscode.TextDocument): Promise<void> {
-    this.name = doc.fileName.replace(/.*[\\\/](.*)/g,
-      (match, match1) => match1
-    );
+    this.name = RtmWorkspace.getNameFromFilePath(doc.fileName);
     this.uri = doc.uri;
     let code = doc.getText();
     code = this.replaceComments(code);
