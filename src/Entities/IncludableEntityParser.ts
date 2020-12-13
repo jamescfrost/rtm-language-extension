@@ -9,10 +9,10 @@ export default class IncludableEntityParser {
 
     constructor(private rtmWorkspace: RtmWorkspace) { }
 
-    locatableEntityParser = new EntityParser(this.rtmWorkspace);
+    entityParser = new EntityParser(this.rtmWorkspace);
 
     parse(source: Source, code: string, offset: number): IncludableEntity[] {
-        const entities = this.locatableEntityParser.parse(
+        const entities = this.entityParser.parse(
             IncludableEntity,
             /^\$NAME\s+([A-Z0-9\.]+\b)[\S\s]*?\n([\S\s]*?)(?=(?:\r\n|\n|\r)\$NAME\s+)/gm,
             source,

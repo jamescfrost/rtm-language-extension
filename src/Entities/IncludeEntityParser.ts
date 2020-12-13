@@ -4,14 +4,14 @@ import IncludeEntity from "./IncludeEntity";
 import RtmWorkspace from "../RtmWorkspace";
 import EntityParser from "./EntityParser";
 
-export class IncludeEntityParser {
+export default class IncludeEntityParser {
 
   constructor(private rtmWorkspace: RtmWorkspace) { }
 
-  locatableEntityParser = new EntityParser(this.rtmWorkspace);
+  entityParser = new EntityParser(this.rtmWorkspace);
 
   parse(source: Source, code: string, offset: number): IncludeEntity[] {
-    const entities = this.locatableEntityParser.parse(
+    const entities = this.entityParser.parse(
       IncludeEntity,
       /^\$INCLUDE\s+(\*|[A-Z0-9_-]+)\s*\(([A-Z0-9\.]+)\).*/gm,
       source,

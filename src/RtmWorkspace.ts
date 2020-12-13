@@ -47,6 +47,7 @@ export default class RtmWorkspace {
     }
     this.sources.push(source);
     this.loading = false;
+    console.log(source.name + " Loaded")
     return source;
   }
 
@@ -57,12 +58,19 @@ export default class RtmWorkspace {
       if (files.length > 0) {
         var sourceAndDocument = await vscode.workspace
           .openTextDocument(files[0])
-          .then((doc) => {
-            const source = this.sources.find((s) => s.name == name);
+          .then(async (doc) => {
+            const source = await this.loadSource(doc);
             if (source != undefined) return new SourceAndDocument(source, doc);
           });
         return sourceAndDocument;
       }
+    } else {
+      var sourceAndDocument = await vscode.workspace
+        .openTextDocument(source.uri)
+        .then(async (doc) => {
+          if (source != undefined) return new SourceAndDocument(source, doc);
+        });
+      return sourceAndDocument;
     }
     return undefined;
   }

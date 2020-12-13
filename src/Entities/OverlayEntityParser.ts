@@ -5,12 +5,17 @@ import ProcedureEntityParser from "./ProcedureEntityParser";
 import RtmWorkspace from "../RtmWorkspace";
 import VariableEntityParser from "./VariableEntityParser";
 import FunctionalEntityParser from "./FunctionalEntityParser";
+import ExtEntityParser from "./ExtEntityParser";
 
 export default class OverlayEntityParser {
 
   private functionalEntityParser = new FunctionalEntityParser(this.rtmWorkspace);
 
   private variableEntityParser = new VariableEntityParser(
+    this.rtmWorkspace
+  );
+
+  private extEntityParser = new ExtEntityParser(
     this.rtmWorkspace
   );
 
@@ -37,11 +42,13 @@ export default class OverlayEntityParser {
       (overlay, match) => {
         const overlayCode = match[0];
         overlay.variables = [];
+        overlay.exts = [];
         overlay.procedures = [];
         this.parseVariables(/^\$USERDATA\b[\s\S]*?(^[\s\S]*?)(?=^\$[A-Z]+)/gm, overlay, source, overlayCode);
         this.parseVariables(/^\$SCREENDATA\b[\s\S]*?(^[\s\S]*?)(?=^\$[A-Z]+)/gm, overlay, source, overlayCode);
         this.parseVariables(/^\$DATA\b[\s\S]*?(^[\s\S]*?)(?=^\$[A-Z]+)/gm, overlay, source, overlayCode);
         this.parseVariables(/^\$EXTDATA\b[\s\S]*?(^[\s\S]*?)(?=^\$[A-Z]+)/gm, overlay, source, overlayCode);
+        this.parseExt(/^\$EXT\b[\s\S]*?(^[\s\S]*?)(?=^\$[A-Z]+)/gm, overlay, source, overlayCode);
         this.parseProcedures(/^\$PROG\s*\(.*?\)[\s\S]*?(^[\s\S]*)/gm, overlay, source, overlayCode);
       }
     );
@@ -57,6 +64,18 @@ export default class OverlayEntityParser {
       const totalOffset = overlay.selection.start + match.index + searchableOffset;
       const entities = this.variableEntityParser.parse(source, searchableCode, totalOffset);
       overlay.variables.push(...entities)
+    }
+  }
+
+  private parseExt(regexp: RegExp, overlay: OverlayEntity, source: Source, code: string) {
+    let match = regexp.exec(code);
+    if (match != null) {
+      const matchedCode = match[0];
+      const searchableCode = match[1];
+      const searchableOffset = matchedCode.indexOf(searchableCode);
+      const totalOffset = overlay.selection.start + match.index + searchableOffset;
+      const entities = this.extEntityParser.parse(source, searchableCode, totalOffset);
+      overlay.exts.push(...entities)
     }
   }
 

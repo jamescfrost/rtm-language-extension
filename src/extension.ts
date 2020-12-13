@@ -31,10 +31,15 @@ export function activate(context: vscode.ExtensionContext) {
 				const name = RtmWorkspace.getNameFromFilePath(doc.fileName);
 				const source = rtmWorkspace.sources.find(s => s.name == name);
 				const word = doc.getText(wordRange);
-				const wordSelection = new Selection(doc.offsetAt(wordRange.start), word.length);
-				const overlay = source?.overlays.find(o => o.selection.intersection(wordSelection));
+				const offset = doc.offsetAt(wordRange.start)
+				const wordSelection = new Selection(offset, word.length);
+				const overlay = source?.overlays.find(o => o.selection.intersection(wordSelection) != null);
 				if (overlay) {
-					let entity: Entity | undefined = overlay.variables.find(v => v.name == word);
+					let entity: Entity | undefined = (word == overlay.name) ? overlay : undefined;
+					if (!entity)
+						entity = overlay.exts.find(v => v.name == word);
+					if (!entity)
+						entity = overlay.variables.find(v => v.name == word);
 					if (!entity)
 						entity = overlay.procedures.find(v => v.name == word);
 					if (entity)

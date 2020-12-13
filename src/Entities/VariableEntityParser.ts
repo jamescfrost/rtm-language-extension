@@ -8,7 +8,7 @@ export default class VariableEntityParser {
 
   constructor(private rtmWorkspace: RtmWorkspace) {}
 
-  locatableEntityParser = new EntityParser(this.rtmWorkspace);
+  entityParser = new EntityParser(this.rtmWorkspace);
 
   parse(
     source: Source,
@@ -16,7 +16,7 @@ export default class VariableEntityParser {
     offset: number,
   ): VariableEntity[] {
     let entities: VariableEntity[] = [];
-    const groupEntities = this.locatableEntityParser.parse(
+    const groupEntities = this.entityParser.parse(
       VariableEntity,
       /([A-Z][A-Z0-9\.]+)\s*((?:=\s*[A-Z0-9\.]+\s+)?\[[\s\S]*?\](?:\s*\*\s*\d+)*)/gm,
       source,
@@ -29,7 +29,7 @@ export default class VariableEntityParser {
       }
     );
     entities.push(...groupEntities);
-    const variableEntities = this.locatableEntityParser.parse(
+    const variableEntities = this.entityParser.parse(
       VariableEntity,
       /([A-Z][A-Z0-9\.]+)\s*((?:=\s*[A-Z0-9\.]+\s+)?(?:[AX]\d+\b|C\^[\s\S]*?\^\^|D[AUEFDMYNHBL]+\b|[NUSFZ][BLP\-]*\d+(?:\.\d+)?\b|\'[A-Z0-9\.]+)(?:\s*\*\s*\d+)*)/gm,
       source,

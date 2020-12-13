@@ -2,7 +2,7 @@ import * as vscode from "vscode";
 import IncludableEntity from "./Entities/IncludableEntity";
 import IncludableEntityParser from "./Entities/IncludableEntityParser";
 import IncludeEntity from "./Entities/IncludeEntity";
-import { IncludeEntityParser } from "./Entities/IncludeEntityParser";
+import IncludeEntityParser from "./Entities/IncludeEntityParser";
 import OverlayEntity from "./Entities/OverlayEntity";
 import OverlayEntityParser from "./Entities/OverlayEntityParser";
 import RtmWorkspace, { SourceAndDocument } from "./RtmWorkspace";

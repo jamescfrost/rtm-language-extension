@@ -5,7 +5,7 @@ export default class VariableEntity extends Entity {
   editMask: string;
 
   getDetail(): string {
-    return `${this.name} ${this.editMask}`;
+    return `Variable: ${this.name} ${this.editMask}`;
   }
 
 }

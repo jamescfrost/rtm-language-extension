@@ -8,7 +8,7 @@ export default class FunctionalEntityParser {
 
   constructor(private rtmWorkspace: RtmWorkspace) { }
 
-  private locatableEntityParser = new EntityParser(this.rtmWorkspace);
+  private entityParser = new EntityParser(this.rtmWorkspace);
 
   parse<T extends FunctionalEntity>(
     entityClass: { new(): T },
@@ -20,7 +20,7 @@ export default class FunctionalEntityParser {
     kind: vscode.SymbolKind,
     applyExtendedFields?: (entity: T, match: RegExpExecArray) => void
   ): T[] {
-    const entities = this.locatableEntityParser.parse(
+    const entities = this.entityParser.parse(
       entityClass,
       regexp,
       source,

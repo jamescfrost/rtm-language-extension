@@ -6,7 +6,7 @@ export default class IncludableEntity extends Entity {
   includeSelection: Selection;
   
   getDetail(): string {
-    return `$NAME ${this.name}`;
+    return `Includable: $NAME ${this.name}`;
   }
   
 }
