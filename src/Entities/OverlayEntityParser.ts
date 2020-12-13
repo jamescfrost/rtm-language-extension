@@ -6,10 +6,16 @@ import RtmWorkspace from "../RtmWorkspace";
 import VariableEntityParser from "./VariableEntityParser";
 import FunctionalEntityParser from "./FunctionalEntityParser";
 import ExtEntityParser from "./ExtEntityParser";
+import FileEntity from "./FileEntity";
+import FileEntityParser from "./FileEntityParser";
 
 export default class OverlayEntityParser {
 
   private functionalEntityParser = new FunctionalEntityParser(this.rtmWorkspace);
+
+  private fileEntityParser = new FileEntityParser(
+    this.rtmWorkspace
+  );
 
   private variableEntityParser = new VariableEntityParser(
     this.rtmWorkspace
@@ -41,9 +47,11 @@ export default class OverlayEntityParser {
       vscode.SymbolKind.Function,
       (overlay, match) => {
         const overlayCode = match[0];
+        overlay.files = [];
         overlay.variables = [];
         overlay.exts = [];
         overlay.procedures = [];
+        this.parseFiles(/^\$FILES\b[\s\S]*?(^[\s\S]*?)(?=^\$[A-Z]+)/gm, overlay, source, overlayCode);
         this.parseVariables(/^\$USERDATA\b[\s\S]*?(^[\s\S]*?)(?=^\$[A-Z]+)/gm, overlay, source, overlayCode);
         this.parseVariables(/^\$SCREENDATA\b[\s\S]*?(^[\s\S]*?)(?=^\$[A-Z]+)/gm, overlay, source, overlayCode);
         this.parseVariables(/^\$DATA\b[\s\S]*?(^[\s\S]*?)(?=^\$[A-Z]+)/gm, overlay, source, overlayCode);
@@ -53,6 +61,18 @@ export default class OverlayEntityParser {
       }
     );
     return entities;
+  }
+
+  private parseFiles(regexp: RegExp, overlay: OverlayEntity, source: Source, code: string) {
+    let match = regexp.exec(code);
+    if (match != null) {
+      const matchedCode = match[0];
+      const searchableCode = match[1];
+      const searchableOffset = matchedCode.indexOf(searchableCode);
+      const totalOffset = overlay.selection.start + match.index + searchableOffset;
+      const entities = this.fileEntityParser.parse(source, searchableCode, totalOffset);
+      overlay.files.push(...entities)
+    }
   }
 
   private parseVariables(regexp: RegExp, overlay: OverlayEntity, source: Source, code: string) {

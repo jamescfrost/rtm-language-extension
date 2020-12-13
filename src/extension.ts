@@ -39,6 +39,8 @@ export function activate(context: vscode.ExtensionContext) {
 					if (!entity)
 						entity = overlay.exts.find(v => v.name == word);
 					if (!entity)
+						entity = overlay.files.find(v => v.name == word);
+					if (!entity)
 						entity = overlay.variables.find(v => v.name == word);
 					if (!entity)
 						entity = overlay.procedures.find(v => v.name == word);
