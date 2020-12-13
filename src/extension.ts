@@ -16,7 +16,7 @@ const selector = { language: 'rtm', scheme: 'file' };
 const rtmWorkspace = new RtmWorkspace();
 
 export function activate(context: vscode.ExtensionContext) {
-	console.log('Congratulations, your extension "rtm-language-extension" is now active!');
+	console.log('"rtm-language-extension" activated!');
 
 	// context.subscriptions.push(vscode.commands.registerCommand('extension.helloWorld', () => {
 	// 	vscode.window.showInformationMessage('Hello World!');
