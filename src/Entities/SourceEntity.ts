@@ -1,33 +1,47 @@
 import * as vscode from "vscode";
-import IncludableEntity from "./Entities/IncludableEntity";
-import IncludableEntityParser from "./Entities/IncludableEntityParser";
-import IncludeEntity from "./Entities/IncludeEntity";
-import IncludeEntityParser from "./Entities/IncludeEntityParser";
-import OverlayEntity from "./Entities/OverlayEntity";
-import OverlayEntityParser from "./Entities/OverlayEntityParser";
-import RtmWorkspace, { SourceAndDocument } from "./RtmWorkspace";
+import RtmWorkspace from "../RtmWorkspace";
+import { SourceAndDocument } from "../SourceAndDocument";
+import Selection from "../Selection";
+import Entity from "./Entity";
+import IncludableEntity from "./IncludableEntity";
+import IncludableEntityParser from "./IncludableEntityParser";
+import IncludeEntity from "./IncludeEntity";
+import IncludeEntityParser from "./IncludeEntityParser";
+import OverlayEntity from "./OverlayEntity";
+import OverlayEntityParser from "./OverlayEntityParser";
 
-export default class Source {
-  name: string;
+export default class SourceEntity extends Entity {
+  
+  getDetail(): string {
+    throw new Error("Method not implemented.");
+  } 
+
   uri: vscode.Uri;
   includables: IncludableEntity[];
   includes: IncludeEntity[];
   overlays: OverlayEntity[];
 
-  constructor(private rtmWorkspace: RtmWorkspace) { }
+  constructor(private rtmWorkspace: RtmWorkspace) {
+    super();
+  }
 
   async Load(doc: vscode.TextDocument): Promise<void> {
     this.name = RtmWorkspace.getNameFromFilePath(doc.fileName);
+    this.kind = vscode.SymbolKind.Module;
+    this.nameSelection = new Selection(0,0);
     this.uri = doc.uri;
     let code = doc.getText();
     code = this.replaceComments(code);
+    this.selection = new Selection(0, code.length);
+    this.sourceName = this.name;
+    this.owner = undefined;
     const includableEntityParser = new IncludableEntityParser(this.rtmWorkspace);
-    this.includables = includableEntityParser.parse(this, code, 0);
+    this.includables = includableEntityParser.parse(this, this, code, 0);
     const includeEntityParser = new IncludeEntityParser(this.rtmWorkspace);
-    this.includes = includeEntityParser.parse(this, code, 0);
+    this.includes = includeEntityParser.parse(this, this, code, 0);
     code = await this.replaceIncludes(doc, code);
     const overlayEntityParser = new OverlayEntityParser(this.rtmWorkspace);
-    this.overlays = overlayEntityParser.parse(this, code, 0);
+    this.overlays = overlayEntityParser.parse(this, this, code, 0);
   }
 
   private replaceComments(code: string): string {

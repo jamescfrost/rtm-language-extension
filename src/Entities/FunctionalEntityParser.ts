@@ -1,8 +1,9 @@
 import * as vscode from "vscode";
 import FunctionalEntity from "./FunctionalEntity";
-import Source from "../Source";
 import RtmWorkspace from "../RtmWorkspace";
 import EntityParser from "./EntityParser";
+import SourceEntity from "./SourceEntity";
+import Entity from "./Entity";
 
 export default class FunctionalEntityParser {
 
@@ -13,7 +14,8 @@ export default class FunctionalEntityParser {
   parse<T extends FunctionalEntity>(
     entityClass: { new(): T },
     regexp: RegExp,
-    source: Source,
+    source: SourceEntity,
+    owner: Entity,
     code: string,
     offset: number,
     nameMatchIndex: number,
@@ -24,12 +26,17 @@ export default class FunctionalEntityParser {
       entityClass,
       regexp,
       source,
+      owner,
       code,
       offset,
       nameMatchIndex,
       kind,
       (entity, match) => {
-        entity.parameters = match[2].replace(/\s/g, "").split(",");
+        var combinedParameters = match[2].replace(/\s/g, "").trim();
+        if (combinedParameters != "")
+          entity.parameters = combinedParameters.split(",");
+        else 
+          entity.parameters = [];
         if (applyExtendedFields)
           applyExtendedFields(entity, match);
       }

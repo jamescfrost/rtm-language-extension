@@ -1,9 +1,10 @@
 import * as vscode from "vscode";
 import IncludableEntity from "./IncludableEntity";
-import Source from "../Source";
 import Selection from "../Selection";
 import RtmWorkspace from "../RtmWorkspace";
 import EntityParser from "./EntityParser";
+import SourceEntity from "./SourceEntity";
+import Entity from "./Entity";
 
 export default class IncludableEntityParser {
 
@@ -11,11 +12,12 @@ export default class IncludableEntityParser {
 
     entityParser = new EntityParser(this.rtmWorkspace);
 
-    parse(source: Source, code: string, offset: number): IncludableEntity[] {
+    parse(source: SourceEntity, owner: Entity, code: string, offset: number): IncludableEntity[] {
         const entities = this.entityParser.parse(
             IncludableEntity,
             /^\$NAME\s+([A-Z0-9\.]+\b)[\S\s]*?\n([\S\s]*?)(?=(?:\r\n|\n|\r)\$NAME\s+)/gm,
             source,
+            owner,
             code,
             offset,
             1,

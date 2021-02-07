@@ -1,8 +1,8 @@
 import * as vscode from "vscode";
 import Entity from "./Entity";
-import Source from "../Source";
 import Selection from "../Selection";
 import RtmWorkspace from "../RtmWorkspace";
+import SourceEntity from "./SourceEntity";
 
 export default class EntityParser {
   constructor(protected rtmWorkspace: RtmWorkspace) {}
@@ -10,7 +10,8 @@ export default class EntityParser {
   parse<T extends Entity>(
     entityClass: { new (): T },
     regexp: RegExp,
-    source: Source,
+    source: SourceEntity,
+    owner: Entity,
     code: string,
     offset: number,
     nameMatchIndex: number,
@@ -25,6 +26,7 @@ export default class EntityParser {
         entity.name = match[nameMatchIndex];
         entity.kind = kind;
         entity.sourceName = source.name;
+        entity.owner = owner;
         entity.selection = new Selection(offset + match.index, match[0].length);
         if (source.includes) {
           for (const include of source.includes) {

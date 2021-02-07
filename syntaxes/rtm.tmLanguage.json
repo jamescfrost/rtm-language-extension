@@ -116,6 +116,10 @@
 									"name": "constant.numeric.rtm"
 								}
 							}
+						},
+						{
+							"match": "<<.*?(>>|$)",
+							"name": "comment.block.rtm"
 						}
 					]
 				}

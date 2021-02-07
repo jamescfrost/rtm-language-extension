@@ -11,6 +11,7 @@
     ],
     "activationEvents": [
         "onCommand:extension.helloWorld",
+        "onCommand:extension.startTask",
         "onLanguage:rtm"
     ],
     "main": "./out/extension.js",
@@ -40,6 +41,10 @@
             {
                 "command": "extension.helloWorld",
                 "title": "Hello World"
+            },
+            {
+                "command": "extension.startTask",
+                "title": "Start Progress"
             }
         ]
     },

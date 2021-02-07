@@ -18,9 +18,43 @@ const rtmWorkspace = new RtmWorkspace();
 export function activate(context: vscode.ExtensionContext) {
 	console.log('"rtm-language-extension" activated!');
 
-	// context.subscriptions.push(vscode.commands.registerCommand('extension.helloWorld', () => {
-	// 	vscode.window.showInformationMessage('Hello World!');
-	// }));
+	context.subscriptions.push(vscode.commands.registerCommand('extension.helloWorld', () => {
+		vscode.window.showInformationMessage('Hello World!');
+	 }));
+
+	context.subscriptions.push(vscode.commands.registerCommand('extension.startTask', () => {
+		vscode.window.withProgress({
+			location: vscode.ProgressLocation.Notification,
+			title: "I am long running!",
+			cancellable: true
+		}, (progress, token) => {
+			token.onCancellationRequested(() => {
+				console.log("User canceled the long running operation");
+			});
+
+			progress.report({ increment: 0 });
+
+			setTimeout(() => {
+				progress.report({ increment: 10, message: "I am long running! - still going..." });
+			}, 1000);
+
+			setTimeout(() => {
+				progress.report({ increment: 40, message: "I am long running! - still going even more..." });
+			}, 2000);
+
+			setTimeout(() => {
+				progress.report({ increment: 50, message: "I am long running! - almost there..." });
+			}, 3000);
+
+			const p = new Promise<void>(resolve => {
+				setTimeout(() => {
+					resolve();
+				}, 5000);
+			});
+
+			return p;
+		});
+	}));
 
 	context.subscriptions.push(vscode.languages.registerHoverProvider(selector, {
 		async provideHover(doc, pos) {
@@ -46,6 +80,7 @@ export function activate(context: vscode.ExtensionContext) {
 						entity = overlay.procedures.find(v => v.name == word);
 					if (entity)
 						return new vscode.Hover(entity.getDetail());
+					//return new vscode.Hover(`Unknown: ${word}`);
 				}
 			}
 			return null;

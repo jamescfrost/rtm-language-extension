@@ -1,8 +1,9 @@
 import * as vscode from "vscode";
-import Source from "../Source";
 import RtmWorkspace from "../RtmWorkspace";
+import Entity from "./Entity";
 import EntityParser from "./EntityParser";
 import ExtEntity from "./ExtEntity";
+import SourceEntity from "./SourceEntity";
 
 export default class ExtEntityParser {
 
@@ -10,11 +11,12 @@ export default class ExtEntityParser {
 
   entityParser = new EntityParser(this.rtmWorkspace);
 
-  parse(source: Source, code: string, offset: number): ExtEntity[] {
+  parse(source: SourceEntity, owner: Entity, code: string, offset: number): ExtEntity[] {
     const entities = this.entityParser.parse(
       ExtEntity,
       /([A-Z0-9\.]+)/gm,
       source,
+      owner,
       code,
       offset,
       1,

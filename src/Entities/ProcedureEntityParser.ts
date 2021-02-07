@@ -1,8 +1,9 @@
 import * as vscode from "vscode";
 import ProcedureEntity from "./ProcedureEntity";
-import Source from "../Source";
 import RtmWorkspace from "../RtmWorkspace";
 import FunctionalEntityParser from "./FunctionalEntityParser";
+import SourceEntity from "./SourceEntity";
+import Entity from "./Entity";
 
 export default class ProcedureEntityParser {
   
@@ -11,7 +12,8 @@ export default class ProcedureEntityParser {
   functionalEntityParser = new FunctionalEntityParser(this.rtmWorkspace);
 
   parse(
-    source: Source,
+    source: SourceEntity,
+    owner: Entity,
     code: string,
     offset: number,
   ): ProcedureEntity[] {
@@ -19,6 +21,7 @@ export default class ProcedureEntityParser {
       ProcedureEntity,
       /^([A-Z0-9\.]+)\s+PROC\(((?:\b[A-Z0-9\.]+\b\s*,?\s*)*)\)[\s\S]*?^ENDPROC\b/gm,
       source,
+      owner,
       code,
       offset,
       1,

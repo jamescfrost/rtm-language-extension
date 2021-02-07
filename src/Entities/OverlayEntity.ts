@@ -12,7 +12,8 @@ export default class OverlayEntity extends FunctionalEntity {
   procedures: ProcedureEntity[];
 
   getDetail(): string {
-    return `Overlay: $ENTRY ${this.name}(${this.parameters.join(", ")})`;
+    const parameters = this.getParametersWithDetail();
+    return `Overlay: $ENTRY ${this.name}(${parameters.join(", ")})`;
   }
 
 }

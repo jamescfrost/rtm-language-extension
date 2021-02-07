@@ -1,8 +1,9 @@
 import * as vscode from "vscode";
-import Source from "../Source";
 import RtmWorkspace from "../RtmWorkspace";
+import Entity from "./Entity";
 import EntityParser from "./EntityParser";
 import FileEntity from "./FileEntity";
+import SourceEntity from "./SourceEntity";
 
 export default class FileEntityParser {
 
@@ -10,11 +11,12 @@ export default class FileEntityParser {
 
   entityParser = new EntityParser(this.rtmWorkspace);
 
-  parse(source: Source, code: string, offset: number): FileEntity[] {
+  parse(source: SourceEntity, owner: Entity, code: string, offset: number): FileEntity[] {
     const entities = this.entityParser.parse(
       FileEntity,
       /([A-Z0-9\.]+)/gm,
       source,
+      owner,
       code,
       offset,
       1,

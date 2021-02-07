@@ -1,22 +1,13 @@
 import * as vscode from "vscode";
 import FunctionalEntity from "./Entities/FunctionalEntity";
-import Source from "./Source";
 import VariableEntity from "./Entities/VariableEntity";
-
-export class SourceAndDocument {
-  source: Source;
-  document: vscode.TextDocument;
-
-  constructor(source: Source, document: vscode.TextDocument) {
-    this.source = source;
-    this.document = document;
-  }
-}
+import { SourceAndDocument } from "./SourceAndDocument";
+import SourceEntity from "./Entities/SourceEntity";
 
 export default class RtmWorkspace {
   defaultFunctions: FunctionalEntity[] = [];
   defaultVariables: VariableEntity[] = [];
-  sources: Source[] = [];
+  sources: SourceEntity[] = [];
   loading: boolean;
 
   // async loadSources(): Promise<void> {
@@ -35,9 +26,9 @@ export default class RtmWorkspace {
   //   });
   // }
 
-  async loadSource(doc: vscode.TextDocument): Promise<Source> {
+  async loadSource(doc: vscode.TextDocument): Promise<SourceEntity> {
     this.loading = true;
-    const source = new Source(this);
+    const source = new SourceEntity(this);
     await source.Load(doc);
     let existingSourceIndex = this.sources.findIndex(
       (d) => d.name == source.name
