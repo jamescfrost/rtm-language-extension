@@ -1,107 +1,87 @@
 // The module 'vscode' contains the VS Code extensibility API
 // Import the module and reference it with the alias vscode in your code below
-import * as vscode from 'vscode';
-import { DocumentSymbolProvider } from './DocumentSymbolProvider';
-import { WorkspaceSymbolProvider } from './WorkspaceSymbolProvider';
-import { DefinitionProvider } from './DefinitionProvider';
-import RtmWorkspace from './RtmWorkspace';
-import Selection from "./Selection";
-import Entity from './Entities/Entity';
+import * as vscode from "vscode";
+import { DocumentSymbolProvider } from "./Providers/DocumentSymbolProvider";
+import { WorkspaceSymbolProvider } from "./Providers/WorkspaceSymbolProvider";
+import { DefinitionProvider } from "./Providers/DefinitionProvider";
+import RtmWorkspace from "./RtmWorkspace";
+import { HoverProvider } from "./Providers/HoverProvider";
 
-const selector = { language: 'rtm', scheme: 'file' };
+const selector = { language: "rtm", scheme: "file" };
+
+const rtmWorkspace = new RtmWorkspace();
 
 // const docSymbolProvider = new DocumentSymbolProvider();
 // const workspaceSymbolProvider = new WorkspaceSymbolProvider(docSymbolProvider);
-// const definitionProvider = new DefinitionProvider(workspaceSymbolProvider);
-const rtmWorkspace = new RtmWorkspace();
+const hoverProvider = new HoverProvider(rtmWorkspace);
+const definitionProvider = new DefinitionProvider(rtmWorkspace);
 
 export function activate(context: vscode.ExtensionContext) {
-	console.log('"rtm-language-extension" activated!');
+  console.log('"rtm-language-extension" activated!');
 
-	context.subscriptions.push(vscode.commands.registerCommand('extension.helloWorld', () => {
-		vscode.window.showInformationMessage('Hello World!');
-	 }));
+  context.subscriptions.push(
+    vscode.commands.registerCommand("extension.startTask", () => {
+      vscode.window.withProgress(
+        {
+          location: vscode.ProgressLocation.Notification,
+          title: "I am long running!",
+          cancellable: true,
+        },
+        (progress, token) => {
+          token.onCancellationRequested(() => {
+            console.log("User canceled the long running operation");
+          });
 
-	context.subscriptions.push(vscode.commands.registerCommand('extension.startTask', () => {
-		vscode.window.withProgress({
-			location: vscode.ProgressLocation.Notification,
-			title: "I am long running!",
-			cancellable: true
-		}, (progress, token) => {
-			token.onCancellationRequested(() => {
-				console.log("User canceled the long running operation");
-			});
+          progress.report({ increment: 0 });
 
-			progress.report({ increment: 0 });
+          setTimeout(() => {
+            progress.report({
+              increment: 10,
+              message: "I am long running! - still going...",
+            });
+          }, 1000);
 
-			setTimeout(() => {
-				progress.report({ increment: 10, message: "I am long running! - still going..." });
-			}, 1000);
+          setTimeout(() => {
+            progress.report({
+              increment: 40,
+              message: "I am long running! - still going even more...",
+            });
+          }, 2000);
 
-			setTimeout(() => {
-				progress.report({ increment: 40, message: "I am long running! - still going even more..." });
-			}, 2000);
+          setTimeout(() => {
+            progress.report({
+              increment: 50,
+              message: "I am long running! - almost there...",
+            });
+          }, 3000);
 
-			setTimeout(() => {
-				progress.report({ increment: 50, message: "I am long running! - almost there..." });
-			}, 3000);
+          const p = new Promise<void>((resolve) => {
+            setTimeout(() => {
+              resolve();
+            }, 5000);
+          });
 
-			const p = new Promise<void>(resolve => {
-				setTimeout(() => {
-					resolve();
-				}, 5000);
-			});
+          return p;
+        }
+      );
+    })
+  );
 
-			return p;
-		});
-	}));
+  context.subscriptions.push(vscode.languages.registerHoverProvider(selector, hoverProvider));
 
-	context.subscriptions.push(vscode.languages.registerHoverProvider(selector, {
-		async provideHover(doc, pos) {
-			const wordRange = doc.getWordRangeAtPosition(pos);
-			if (wordRange) {
-				if (rtmWorkspace.loading) 
-					return new vscode.Hover("Loading ...");
-				const name = RtmWorkspace.getNameFromFilePath(doc.fileName);
-				const source = rtmWorkspace.sources.find(s => s.name == name);
-				const word = doc.getText(wordRange);
-				const offset = doc.offsetAt(wordRange.start)
-				const wordSelection = new Selection(offset, word.length);
-				const overlay = source?.overlays.find(o => o.selection.intersection(wordSelection) != null);
-				if (overlay) {
-					let entity: Entity | undefined = (word == overlay.name) ? overlay : undefined;
-					if (!entity)
-						entity = overlay.exts.find(v => v.name == word);
-					if (!entity)
-						entity = overlay.files.find(v => v.name == word);
-					if (!entity)
-						entity = overlay.variables.find(v => v.name == word);
-					if (!entity)
-						entity = overlay.procedures.find(v => v.name == word);
-					if (entity)
-						return new vscode.Hover(entity.getDetail());
-					//return new vscode.Hover(`Unknown: ${word}`);
-				}
-			}
-			return null;
-		}
-	}));
+  //context.subscriptions.push(vscode.languages.registerDocumentSymbolProvider(selector, docSymbolProvider));
 
-	//context.subscriptions.push(vscode.languages.registerDocumentSymbolProvider(selector, docSymbolProvider));
+  //context.subscriptions.push(vscode.languages.registerWorkspaceSymbolProvider(workspaceSymbolProvider));
 
-	//context.subscriptions.push(vscode.languages.registerWorkspaceSymbolProvider(workspaceSymbolProvider));
+  context.subscriptions.push(vscode.languages.registerDefinitionProvider(selector, definitionProvider));
 
-	//context.subscriptions.push(vscode.languages.registerDefinitionProvider(selector, definitionProvider));
+  vscode.workspace.onDidOpenTextDocument((event) => {
+    if (event.fileName.toUpperCase().endsWith(".RTM"))
+      rtmWorkspace.loadSource(event);
+  });
 
-	
-	vscode.workspace.onDidOpenTextDocument((event) => {
-		if (event.fileName.toUpperCase().endsWith(".RTM"))
-			rtmWorkspace.loadSource(event);
-	},);
-
-	vscode.workspace.onDidChangeTextDocument((event) => {
-		if (event.document.fileName.toUpperCase().endsWith(".RTM"))
-			rtmWorkspace.loadSource(event.document);
-	});
-
+  vscode.workspace.onDidChangeTextDocument((event) => {
+    if (event.document.fileName.toUpperCase().endsWith(".RTM"))
+      rtmWorkspace.loadSource(event.document);
+  });
 }

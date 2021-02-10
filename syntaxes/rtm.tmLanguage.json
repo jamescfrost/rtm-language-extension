@@ -118,8 +118,7 @@
 							}
 						},
 						{
-							"match": "<<.*?(>>|$)",
-							"name": "comment.block.rtm"
+							"include": "#comments"
 						}
 					]
 				}

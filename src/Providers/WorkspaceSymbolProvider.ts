@@ -5,18 +5,9 @@ export class WorkspaceSymbolProvider
   implements vscode.WorkspaceSymbolProvider<vscode.SymbolInformation> {
   
   private _docSymbolProvider: DocumentSymbolProvider;
-  private _workspaceDocumentSymbols: vscode.DocumentSymbol[];
   private _workspaceSymbols: vscode.SymbolInformation[];
 
-  constructor(docSymbolProvider: DocumentSymbolProvider) {
-    this._docSymbolProvider = docSymbolProvider;
-    this._workspaceDocumentSymbols = [];
-    this._workspaceSymbols = [];
-    vscode.workspace.onDidChangeTextDocument((event) => {
-      this.update();
-    });
-    this.update();
-  }
+  constructor() {}
 
   private async update() {
     const workspaceDocumentSymbols: vscode.DocumentSymbol[] = [];
@@ -37,13 +28,8 @@ export class WorkspaceSymbolProvider
             )
         );
     }
-    this._workspaceDocumentSymbols = workspaceDocumentSymbols;
     this._workspaceSymbols = workspaceSymbols;
     return;  
-  }
-
-  async provideWorkspaceDocumentSymbols() {
-    return this._workspaceDocumentSymbols;
   }
 
   async provideWorkspaceSymbols(query: string) {

@@ -10,7 +10,6 @@
         "Programming Languages"
     ],
     "activationEvents": [
-        "onCommand:extension.helloWorld",
         "onCommand:extension.startTask",
         "onLanguage:rtm"
     ],
