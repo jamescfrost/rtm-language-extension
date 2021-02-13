@@ -8,8 +8,16 @@ export class HoverProvider implements vscode.HoverProvider {
     if (this.rtmWorkspace.loading) 
       return new vscode.Hover("Loading ...");
     var entity = this.rtmWorkspace.provideEntity(document, position);
-    if (entity) 
-      return new vscode.Hover(entity.getDetail());
+    if (entity) {
+      const type = entity.getType();
+      const detail = entity.getDetail();
+      const mkd = new vscode.MarkdownString();
+      mkd.appendText(type);
+      mkd.appendText("\n");
+      mkd.appendMarkdown("___");
+      mkd.appendCodeblock(detail);
+      return new vscode.Hover(mkd);
+    }
     //return new vscode.Hover(`Unknown: ${word}`);
     return null;
   }

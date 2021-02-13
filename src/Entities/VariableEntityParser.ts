@@ -44,7 +44,7 @@ export default class VariableEntityParser {
       (entity, match) => {
         entity.editMask = match[2].replace(/[\t \r\n]/g, "");
         if (entity.editMask.startsWith("C^"))
-          entity.editMask = entity.editMask.replace(/\^(?=\^(?!$))/g, "");
+          entity.editMask = entity.editMask.replace(/\^(?=\^(?!$|\*))/g, "");
       }
     );
     entities.push(...variableEntities);

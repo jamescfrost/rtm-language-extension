@@ -1,11 +1,7 @@
 import Entity from "./Entity";
 import OverlayEntity from "./OverlayEntity";
 
-export default class FunctionalEntity extends Entity {
-  
-  getDetail(): string {
-    throw new Error("Method not implemented.");
-  }
+export default abstract class FunctionalEntity extends Entity {
 
   parameters: string[];
   returns: string[];

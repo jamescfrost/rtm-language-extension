@@ -11,9 +11,12 @@ import OverlayEntity from "./OverlayEntity";
 import OverlayEntityParser from "./OverlayEntityParser";
 
 export default class SourceEntity extends Entity {
+  getType(): string {
+    return "Source";
+  }
   
   getDetail(): string {
-    throw new Error("Method not implemented.");
+    return this.name;
   } 
 
   uri: vscode.Uri;

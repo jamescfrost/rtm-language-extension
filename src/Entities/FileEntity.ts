@@ -1,9 +1,12 @@
 import Entity from "./Entity";
 
 export default class FileEntity extends Entity {
+  getType(): string {
+    return "File";
+  }
   
   getDetail(): string {
-    return `File: ${this.name}`;
+    return `${this.name}`;
   }
 
 }

@@ -11,5 +11,6 @@ export default abstract class Entity {
   owner: Entity | undefined;
  
   abstract getDetail(): string;
+  abstract getType(): string;
 }
 

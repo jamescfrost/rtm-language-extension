@@ -1,11 +1,14 @@
 import Entity from "./Entity";
 
 export default class VariableEntity extends Entity {
+  getType(): string {
+    return "Variable";
+  }
 
   editMask: string;
 
   getDetail(): string {
-    return `Variable: ${this.name} ${this.editMask}`;
+    return `${this.name} ${this.editMask}`;
   }
 
 }

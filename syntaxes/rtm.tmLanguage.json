@@ -6,6 +6,9 @@
 			"include": "#comments"
 		},
 		{
+			"include": "#edit-masks"
+		},
+		{
 			"include": "#data-area"
 		},
 		{
@@ -13,6 +16,9 @@
 		},
 		{
 			"include": "#strings"
+		},
+		{
+			"include": "#constants"
 		}
 	],
 	"repository": {
@@ -48,7 +54,7 @@
 				},
 				{
 					"name": "keyword.dollar.rtm",
-					"match": "^(\\$(ENTRY|ABORT|DATA|DATA,SHARED|ENTRY|EXT|EXTDATA|EXTRACT|FILE|FILES|INCLUDE|LIVE|LIVEUSER|NAME|NEWCLUSTERS|OPT|PROG|RECORD|SCRNDATA|SNAPSHOT|TEST|TESTUSER|USERDATA))\\b(?!\\.)"
+					"match": "(^|\b)(\\$(ENTRY|ABORT|DATA|DATA,SHARED|ENTRY|EXT|EXTDATA|EXTRACT|FILE|FILES|INCLUDE|LIVE|LIVEUSER|NAME|NEWCLUSTERS|OPT|PROG|RECORD|SCRNDATA|SNAPSHOT|TEST|TESTUSER|USERDATA))\\b(?!\\.)"
 				},
 				{
 					"name": "constant.language.io.rtm",
@@ -85,6 +91,40 @@
 			"begin": "\"",
 			"end": "\""
 		},
+		"constants": {
+			"patterns": [
+				{
+					"name": "constant.numeric.rtm",
+					"match": "\\b(?<!@|\\.)\\d+(?:.\\d+)?(?!\\.)\\b"
+				}
+			]
+		},
+		"edit-masks": {
+			"patterns": [
+				{
+					"name": "keyword.type.alphanumeric.rtm",
+					"match": "(?<=\\s)[AX]\\d+(\\s*\\*\\s*\\d+)*"
+				},
+				{
+					"name": "keyword.type.numeric.rtm",
+					"match": "(?<=\\s)[NUSFZ][BLP\\-]*\\d+(\\.\\d+)?(\\s*\\*\\s*\\d+)*"
+				},
+				{
+					"name": "keyword.type.date.rtm",
+					"match": "(?<=\\s)D[AUEFDMYNHBL]+(\\s*\\*\\s*\\d+)*"
+				},
+				{
+					"name": "keyword.type.codestring.rtm",
+					"begin": "(?<=\\s)(?=C\\^)",
+					"end": "\\^{2}(\\s*\\*\\s*\\d+)*",
+					"patterns": [
+						{
+							"include": "#comments"
+						}
+					]
+				}
+			]
+		},
 		"data-area": {
 			"begin": "(?<=^\\$DATA\\b)",
 			"end": "(?=^\\$)",
@@ -93,42 +133,7 @@
 					"include": "#comments"
 				},
 				{
-					"name": "support.type.alphanumeric.rtm",
-					"match": "(?<=\\s)[AX]\\d+\\b"
-				},
-				{
-					"name": "support.type.numeric.rtm",
-					"match": "(?<=\\s)[NUSFZ][BLP\\-]*\\d+(\\.\\d+)?\\b"
-				},
-				{
-					"name": "support.type.date.rtm",
-					"match": "(?<=\\s)D[AUEFDMYNHBL]+\\b"
-				},
-				{
-					"name": "support.type.codestring.rtm",
-					"begin": "(?<=\\s)(?=C\\^)",
-					"end": "\\^{2}",
-					"patterns": [
-						{
-							"match": "(\\^)(\\w+)(?=\\^)",
-							"captures": {
-								"2": {
-									"name": "constant.numeric.rtm"
-								}
-							}
-						},
-						{
-							"include": "#comments"
-						}
-					]
-				}
-			]
-		},
-		"constants": {
-			"patterns": [
-				{
-					"name": "constant.numeric.rtm",
-					"match": "\\b(?<![\\.@])\\d+\\b(?!\\.)"
+					"include": "#edit-masks"
 				}
 			]
 		}
