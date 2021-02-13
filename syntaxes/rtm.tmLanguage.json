@@ -57,31 +57,31 @@
 					"match": "(^|\b)(\\$(ENTRY|ABORT|DATA|DATA,SHARED|ENTRY|EXT|EXTDATA|EXTRACT|FILE|FILES|INCLUDE|LIVE|LIVEUSER|NAME|NEWCLUSTERS|OPT|PROG|RECORD|SCRNDATA|SNAPSHOT|TEST|TESTUSER|USERDATA))\\b(?!\\.)"
 				},
 				{
-					"name": "constant.language.io.rtm",
+					"name": "keyword.language.io.rtm",
 					"match": "\\b(DOWN|ERASE|CR|BACK|BEEP|CLEAR|LEFT|RIGHT|TABSTOP|UP|FLASH|HI|LO|KEYED|NOABORT)\\b"
 				},
 				{
-					"name": "support.variable.rtm",
+					"name": "keyword.variable.rtm",
 					"match": "\\B@[1234ABCR](?=\\b|_)"
 				},
 				{
-					"name": "support.function.files.rtm",
+					"name": "keyword.function.files.rtm",
 					"match": "\\b(ALLOC|COPYR|INDEX|LOCK|NOGROUP|PACK|READ|READLOCK|REF|RELEASE|SEGPTR|TESTLOCK|UNLOCK|WRITE|UNPACK|BNUM|DELETE)\\b"
 				},
 				{
-					"name": "support.function.data.rtm",
+					"name": "keyword.function.data.rtm",
 					"match": "\\b(INIT|APPLY)\\b"
 				},
 				{
-					"name": "support.function.strings.rtm",
+					"name": "keyword.function.strings.rtm",
 					"match": "\\b(CONCAT|CONVERT|EXT|LENGTH|MATCH|TRANSLATE|SUBSTR)\\b"
 				},
 				{
-					"name": "support.function.arithmetic.rtm",
+					"name": "keyword.function.arithmetic.rtm",
 					"match": "\\b(ABS|EXP2|MAX|MIN|RANDOM|REM)\\b"
 				},
 				{
-					"name": "support.function.io.rtm",
+					"name": "keyword.function.io.rtm",
 					"match": "\\b(ALTSCR|DISCARD|ERROR|RC|TRUNC|WAIT|VID|IN|INFLD|INOPT|SETOPT|VALID|OUT|SETERR|FIXERRS|OUTIF|OUTIMM|OUTONLY)\\b"
 				}
 			]
