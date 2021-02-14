@@ -7,26 +7,17 @@ import Selection from "./Selection";
 import Entity from "./Entities/Entity";
 
 export default class RtmWorkspace {
-  defaultFunctions: Map<string, string> = new Map();
-  defaultVariables: Map<string, string> = new Map();
+  defaultFunctions: Map<string, vscode.MarkdownString> = new Map();
+  defaultVariables: Map<string, vscode.MarkdownString> = new Map();
   sources: SourceEntity[] = [];
   loading: boolean;
 
   constructor() {
-    this.defaultFunctions.set(
-      "EXT",
-      `Default Function: EXT(VALUE (numeric/codestring/date))
-    ___
-    Returns the variables external value as string
-    `
-    );
-    this.defaultFunctions.set(
-      "CONVERT",
-      `Default Function: CONVERT(INT, FROM (Alphanumeric), Variable TO (Numeric))
-    ___
-    Returns the variables external value as string
-    `
-    );
+    const ext = new vscode.MarkdownString();
+    ext.appendMarkdown("Builtin Function\n___");
+    ext.appendCodeblock("EXT(VALUE {numeric/codestring/date})");
+    ext.appendMarkdown("___\nReturns the variables external value as string")
+    this.defaultFunctions.set("EXT", ext);
   }
 
   // async loadSources(): Promise<void> {

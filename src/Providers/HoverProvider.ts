@@ -17,6 +17,15 @@ export class HoverProvider implements vscode.HoverProvider {
       mkd.appendMarkdown("___");
       mkd.appendCodeblock(detail);
       return new vscode.Hover(mkd);
+    } else {
+      const wordRange = document.getWordRangeAtPosition(position);
+      if (wordRange) {
+        const word = document.getText(wordRange);
+        const defaultFunction = this.rtmWorkspace.defaultFunctions.get(word);
+        if (defaultFunction) {
+          return new vscode.Hover(defaultFunction);
+        }
+      }
     }
     //return new vscode.Hover(`Unknown: ${word}`);
     return null;
